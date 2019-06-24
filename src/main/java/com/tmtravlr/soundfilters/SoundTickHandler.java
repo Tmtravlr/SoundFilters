@@ -41,6 +41,8 @@ public class SoundTickHandler {
 	private static float prevDecayFactor = 0.0F;
 	private static float prevRoomFactor = 0.0F;
 	private static float prevSkyFactor = 0.0F;
+	public static float targetLowPassGain = 1.0F;
+	public static float targetLowPassGainHF = 1.0F;
 	public static float baseLowPassGain = 1.0F;
 	public static float baseLowPassGainHF = 1.0F;
 	public static boolean waterSound = false;
@@ -54,12 +56,6 @@ public class SoundTickHandler {
 	};
 
 	public static ConcurrentSkipListMap<ComparablePosition, DoubleWithTimeout> sourceOcclusionMap = new ConcurrentSkipListMap(CPcomparator);
-
-	// static
-	// {
-	// //Synchronize the sourceOcclusionMap
-	// sourceOcclusionMap = Collections.synchronizedMap(sourceOcclusionMap);
-	// }
 
 	/**
 	 * Represents a x, y, z position which has a comparator and a few methods
@@ -161,48 +157,56 @@ public class SoundTickHandler {
 	@SubscribeEvent
 	public void tick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
-			// Handle the low-pass inside of liquids
-			if (this.mc != null && this.mc.world != null && this.mc.player != null) {
+			if (this.mc != null && this.mc.world != null && this.mc.player != null && !this.mc.isGamePaused()) {
+				// Handle the low-pass inside of liquids				
 				if (this.mc.player.isInsideOfMaterial(Material.WATER)) {
 					if (!waterSound) {
 						if (SoundFiltersMod.DEBUG) {
-							System.out.println("[SoundFilters] Applying water sound low pass.");
+							SoundFiltersMod.logger.debug("[SoundFilters] Applying water sound low pass.");
 						}
 
-						baseLowPassGain = 1.0F;
-						baseLowPassGainHF = 0.4F;
+						targetLowPassGain = SoundFiltersMod.waterVolume;
+						targetLowPassGainHF = SoundFiltersMod.waterLowPassAmount;
 						lavaSound = false;
 						waterSound = true;
 					}
 				} else if (waterSound) {
 					if (SoundFiltersMod.DEBUG) {
-						System.out.println("[SoundFilters] Stopping water sound low pass.");
+						SoundFiltersMod.logger.debug("[SoundFilters] Stopping water sound low pass.");
 					}
 
-					baseLowPassGain = 1.0F;
-					baseLowPassGainHF = 1.0F;
+					targetLowPassGain = 1.0F;
+					targetLowPassGainHF = 1.0F;
 					waterSound = false;
 				}
 
 				if (this.mc.player.isInsideOfMaterial(Material.LAVA)) {
 					if (!lavaSound) {
 						if (SoundFiltersMod.DEBUG) {
-							System.out.println("[SoundFilters] Applying lava sound low pass.");
+							SoundFiltersMod.logger.debug("[SoundFilters] Applying lava sound low pass.");
 						}
 
-						baseLowPassGain = 0.6F;
-						baseLowPassGainHF = 0.2F;
+						targetLowPassGain = SoundFiltersMod.lavaVolume;
+						targetLowPassGainHF = SoundFiltersMod.lavaLowPassAmount;
 						lavaSound = true;
 						waterSound = false;
 					}
 				} else if (lavaSound) {
 					if (SoundFiltersMod.DEBUG) {
-						System.out.println("[SoundFilters] Stopping lava sound low pass.");
+						SoundFiltersMod.logger.debug("[SoundFilters] Stopping lava sound low pass.");
 					}
 
-					baseLowPassGain = 1.0F;
-					baseLowPassGainHF = 1.0F;
+					targetLowPassGain = 1.0F;
+					targetLowPassGainHF = 1.0F;
 					lavaSound = false;
+				}
+				
+				if (Math.abs(targetLowPassGain - baseLowPassGain) > 0.001F) {
+					baseLowPassGain = (targetLowPassGain + baseLowPassGain) / 2;
+				}
+				
+				if (Math.abs(targetLowPassGainHF - baseLowPassGainHF) > 0.001F) {
+					baseLowPassGainHF = (targetLowPassGainHF + baseLowPassGainHF) / 2;
 				}
 			} else {
 				// We must be in the menu; turn everything off:
@@ -220,39 +224,25 @@ public class SoundTickHandler {
 
 			// Calculate sound occlusion for all the sources playing.
 			if (SoundFiltersMod.doOcclusion) {
-				// synchronized (sourceOcclusionMap)
-				// {
 				for (ComparablePosition sourcePosition : sourceOcclusionMap.keySet()) {
 					DoubleWithTimeout sourceAndAmount = (DoubleWithTimeout) sourceOcclusionMap.get(sourcePosition);
 					if (sourceAndAmount != null) {
-						if (sourceAndAmount.source != null && sourceAndAmount.source.position != null && sourceAndAmount.source.playing() && !sourceAndAmount.source.stopped()
-								&& sourceAndAmount.timeout > 0) {
-							sourceAndAmount.timeout--;
-
+						if (sourceAndAmount.source != null && sourceAndAmount.source.position != null && sourceAndAmount.source.active()) {
 							if (this.mc != null && this.mc.world != null && this.mc.player != null) {
 								Vec3d roomSize = new Vec3d(this.mc.player.posX, this.mc.player.posY + (double) this.mc.player.getEyeHeight(), this.mc.player.posZ);
-								sourceAndAmount.amount = (sourceAndAmount.amount * 3 + getSoundOcclusion(this.mc.world,
-										new Vec3d((double) sourceAndAmount.source.position.x, (double) sourceAndAmount.source.position.y, (double) sourceAndAmount.source.position.z), roomSize)) / 4.0;
+								sourceAndAmount.amount = (sourceAndAmount.amount * 3 + SoundFiltersMod.occlusionPercent * getSoundOcclusion(this.mc.world, new Vec3d((double) sourceAndAmount.source.position.x, (double) sourceAndAmount.source.position.y, (double) sourceAndAmount.source.position.z), roomSize)) / 4.0;
 							} else {
 								sourceAndAmount.amount = 0.0D;
 							}
 						} else {
-							// Remove any sources that have "timed out" (have
-							// stopped setting the timeout
-							// to 10 because they finished playing)
-
-							if (sourceAndAmount.timeout <= 0) {
-								toRemove.add(sourcePosition);
-							}
-
-							--sourceAndAmount.timeout;
+							toRemove.add(sourcePosition);
 						}
 					}
 				}
 
 				for (ComparablePosition positionToRemove : toRemove) {
 					if (SoundFiltersMod.SUPER_DUPER_DEBUG)
-						System.out.println("[Sound Filters] Removing " + positionToRemove + ", " + positionToRemove.hashCode() + ", " + profileTickCountdown);
+						SoundFiltersMod.logger.debug("[Sound Filters] Removing " + positionToRemove + ", " + positionToRemove.hashCode() + ", " + profileTickCountdown);
 					sourceOcclusionMap.remove(positionToRemove);
 				}
 			}
@@ -495,8 +485,6 @@ public class SoundTickHandler {
 							skyFactor++;
 						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) + 5, y + 5, z - rand.nextInt(5) + 5))
 							skyFactor++;
-
-						// System.out.println(skyFactor);
 					}
 
 					skyFactor = 1.0F - skyFactor / 17.0F;
@@ -517,7 +505,7 @@ public class SoundTickHandler {
 					}
 
 					if (SoundFiltersMod.SUPER_DUPER_DEBUG) {
-						System.out.println("[Sound Filters] Reverb Profile - Room Size: " + roomSize + ", Looked at: " + i + ", Sky Factor: " + skyFactor + ", High, Mid, and Low Reverb: ("
+						SoundFiltersMod.logger.debug("[Sound Filters] Reverb Profile - Room Size: " + roomSize + ", Looked at: " + i + ", Sky Factor: " + skyFactor + ", High, Mid, and Low Reverb: ("
 								+ highReverb + ", " + midReverb + ", " + lowReverb + ")");
 					}
 

@@ -3,6 +3,8 @@ package com.tmtravlr.soundfilters.filters;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 
+import com.tmtravlr.soundfilters.SoundFiltersMod;
+
 public abstract class BaseFilter
 {
     protected boolean isLoaded = false;
@@ -51,9 +53,10 @@ public abstract class BaseFilter
 	        	filter3.loadFilter();
         	}
         	
-        	if(checkError("load3SourceFilters attempt 2") != 0)
+        	int error = checkError("load3SourceFilters attempt 2");
+        	if (error != 0)
         	{
-        		throw new FilterException("Sound Filters - Error while trying to load 3 source filters.");
+        		throw new FilterException("Sound Filters - Error while trying to load 3 source filters. Error code is " + error);
         	}
         }
     }
@@ -72,10 +75,11 @@ public abstract class BaseFilter
         	}
         	
         	AL10.alSourcei(sourceChannel, type, safeSlot(filter));
-        	
-        	if(checkError("loadSourceFilter attempt 2") != 0)
+
+        	int error = checkError("loadSourceFilter attempt 2");
+        	if (error != 0)
         	{
-        		throw new FilterException("Sound Filters - Error while trying to load source filter.");
+        		throw new FilterException("Sound Filters - Error while trying to load source filter. Error code is " + error);
         	}
         }
     }
@@ -105,8 +109,8 @@ public abstract class BaseFilter
     {
     	int err = AL10.alGetError();
     	
-        if(err != 0) {
-        	System.out.println("[Sound Filters] Caught AL error in '" + location + "'! Error is " + err);
+        if (err != 0) {
+        	SoundFiltersMod.logger.error("Caught AL error in '" + location + "'! Error is " + err);
         	return err;
         }
         

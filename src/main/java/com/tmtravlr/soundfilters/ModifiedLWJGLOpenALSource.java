@@ -137,7 +137,6 @@ public class ModifiedLWJGLOpenALSource extends SourceLWJGLOpenAL {
 						if(tempSourceInfo != null) {
 							sourceInfo = tempSourceInfo;
 							
-							sourceInfo.timeout = 10;
 							sourceInfo.source = this;
 						} else {
 							SoundTickHandler.sourceOcclusionMap.put(sourcePosition, sourceInfo);
