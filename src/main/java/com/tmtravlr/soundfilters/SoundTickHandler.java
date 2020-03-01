@@ -228,11 +228,19 @@ public class SoundTickHandler {
 					DoubleWithTimeout sourceAndAmount = (DoubleWithTimeout) sourceOcclusionMap.get(sourcePosition);
 					if (sourceAndAmount != null) {
 						if (sourceAndAmount.source != null && sourceAndAmount.source.position != null && sourceAndAmount.source.active()) {
-							if (this.mc != null && this.mc.world != null && this.mc.player != null) {
-								Vec3d roomSize = new Vec3d(this.mc.player.posX, this.mc.player.posY + (double) this.mc.player.getEyeHeight(), this.mc.player.posZ);
-								sourceAndAmount.amount = (sourceAndAmount.amount * 3 + SoundFiltersMod.occlusionPercent * getSoundOcclusion(this.mc.world, new Vec3d((double) sourceAndAmount.source.position.x, (double) sourceAndAmount.source.position.y, (double) sourceAndAmount.source.position.z), roomSize)) / 4.0;
-							} else {
-								sourceAndAmount.amount = 0.0D;
+							
+							// The source can sometimes be modified in another thread, causing a rare null pointer exception here. It seems to happen when a lot of mods are installed.
+							try {
+								if (this.mc != null && this.mc.world != null && this.mc.player != null) {
+									Vec3d roomSize = new Vec3d(this.mc.player.posX, this.mc.player.posY + (double) this.mc.player.getEyeHeight(), this.mc.player.posZ);
+										sourceAndAmount.amount = (sourceAndAmount.amount * 3 + SoundFiltersMod.occlusionPercent * getSoundOcclusion(this.mc.world, new Vec3d((double) sourceAndAmount.source.position.x, (double) sourceAndAmount.source.position.y, (double) sourceAndAmount.source.position.z), roomSize)) / 4.0;
+								} else {
+									sourceAndAmount.amount = 0.0D;
+								}
+							} catch (NullPointerException e) {
+								if (SoundFiltersMod.DEBUG) {
+									SoundFiltersMod.logger.warn("Caught null pointer exception while updating sound occlusion. This happens sometimes because a sound is modified at the same time in another thread.");
+								}
 							}
 						} else {
 							toRemove.add(sourcePosition);
