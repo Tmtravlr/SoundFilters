@@ -1,6 +1,6 @@
 package com.tmtravlr.soundfilters.filters;
 
-import org.lwjgl.openal.EFX10;
+import org.lwjgl.openal.EXTEfx;
 
 public class FilterLowPass extends BaseFilter
 {
@@ -12,9 +12,9 @@ public class FilterLowPass extends BaseFilter
         if (!this.isLoaded)
         {
             this.isLoaded = true;
-            this.id = EFX10.alGenFilters();
+            this.id = EXTEfx.alGenFilters();
             this.slot = this.id;
-            EFX10.alFilteri(this.id, 32769, 1);
+            EXTEfx.alFilteri(this.id, 32769, 1);
         }
     }
 
@@ -50,7 +50,7 @@ public class FilterLowPass extends BaseFilter
             this.loadFilter();
         }
 
-        EFX10.alFilterf(this.id, 1, this.gain);
-        EFX10.alFilterf(this.id, 2, this.gainHF);
+        EXTEfx.alFilterf(this.id, 1, this.gain);
+        EXTEfx.alFilterf(this.id, 2, this.gainHF);
     }
 }

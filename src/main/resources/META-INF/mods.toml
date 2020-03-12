@@ -1,0 +1,14 @@
+modLoader="javafml" #mandatory
+loaderVersion="[25,)" #mandatory (24 is current forge version)
+issueTrackerURL="https://minecraft.curseforge.com/projects/sound-filters/issues"
+[[mods]]
+
+modId="soundfilters"
+version="${file.jarVersion}"
+displayName="Sound Filters"
+displayURL="https://minecraft.curseforge.com/projects/sound-filters"
+credits="Made by Tmtravlr."
+authors="Tmtravlr"
+description='''
+Adds reveb to caves, as well as muted sounds underwater/in lava, and behind walls.
+'''

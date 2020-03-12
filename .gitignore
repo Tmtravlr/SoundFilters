@@ -20,14 +20,13 @@ gradlew
 *.gradle
 
 # other
-*.bat
-*changelog.txt
-*-fml.txt
 eclipse
 run
-MinecraftForge-Credits.txt
-MinecraftForge-License.txt
-Paulscode IBXM Library License.txt
-Paulscode SoundSystem CodecIBXM License.txt
+*.bat
+*changelog.txt
+CREDITS.txt
 README.txt
-LICENSE-new.txt
+LICENSE.txt
+
+# Files from Forge MDK
+forge*changelog.txt

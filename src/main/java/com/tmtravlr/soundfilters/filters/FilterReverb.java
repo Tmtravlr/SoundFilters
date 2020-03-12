@@ -1,6 +1,6 @@
 package com.tmtravlr.soundfilters.filters;
 
-import org.lwjgl.openal.EFX10;
+import org.lwjgl.openal.EXTEfx;
 
 public class FilterReverb extends BaseFilter
 {
@@ -18,16 +18,18 @@ public class FilterReverb extends BaseFilter
     public float roomRolloffFactor = 0.0F;
     public int decayHFLimit = 1;
 
+    @Override
     public void loadFilter()
     {
         if (!this.isLoaded)
         {
             this.isLoaded = true;
-            this.id = EFX10.alGenEffects();
-            this.slot = EFX10.alGenAuxiliaryEffectSlots();
+            this.id = EXTEfx.alGenEffects();
+            this.slot = EXTEfx.alGenAuxiliaryEffectSlots();
         }
     }
 
+    @Override
     public void checkParameters()
     {
         if (this.density < 0.0F)
@@ -161,6 +163,7 @@ public class FilterReverb extends BaseFilter
         }
     }
 
+    @Override
     public void loadParameters()
     {
         this.checkParameters();
@@ -170,22 +173,22 @@ public class FilterReverb extends BaseFilter
             this.loadFilter();
         }
 
-        EFX10.alAuxiliaryEffectSlotf(this.slot, 2, 0.0F);
-        EFX10.alEffecti(this.id, 32769, 1);
-        EFX10.alEffectf(this.id, 1, this.density);
-        EFX10.alEffectf(this.id, 2, this.diffusion);
-        EFX10.alEffectf(this.id, 3, this.gain);
-        EFX10.alEffectf(this.id, 4, this.gainHF);
-        EFX10.alEffectf(this.id, 5, this.decayTime);
-        EFX10.alEffectf(this.id, 6, this.decayHFRatio);
-        EFX10.alEffectf(this.id, 7, this.reflectionsGain);
-        EFX10.alEffectf(this.id, 8, this.reflectionsDelay);
-        EFX10.alEffectf(this.id, 9, this.lateReverbGain);
-        EFX10.alEffectf(this.id, 10, this.lateReverbDelay);
-        EFX10.alEffectf(this.id, 11, this.airAbsorptionGainHF);
-        EFX10.alEffectf(this.id, 12, this.roomRolloffFactor);
-        EFX10.alEffecti(this.id, 13, this.decayHFLimit);
-        EFX10.alAuxiliaryEffectSloti(this.slot, 1, this.id);
-        EFX10.alAuxiliaryEffectSlotf(this.slot, 2, 1.0F);
+        EXTEfx.alAuxiliaryEffectSlotf(this.slot, 2, 0.0F);
+        EXTEfx.alEffecti(this.id, 32769, 1);
+        EXTEfx.alEffectf(this.id, 1, this.density);
+        EXTEfx.alEffectf(this.id, 2, this.diffusion);
+        EXTEfx.alEffectf(this.id, 3, this.gain);
+        EXTEfx.alEffectf(this.id, 4, this.gainHF);
+        EXTEfx.alEffectf(this.id, 5, this.decayTime);
+        EXTEfx.alEffectf(this.id, 6, this.decayHFRatio);
+        EXTEfx.alEffectf(this.id, 7, this.reflectionsGain);
+        EXTEfx.alEffectf(this.id, 8, this.reflectionsDelay);
+        EXTEfx.alEffectf(this.id, 9, this.lateReverbGain);
+        EXTEfx.alEffectf(this.id, 10, this.lateReverbDelay);
+        EXTEfx.alEffectf(this.id, 11, this.airAbsorptionGainHF);
+        EXTEfx.alEffectf(this.id, 12, this.roomRolloffFactor);
+        EXTEfx.alEffecti(this.id, 13, this.decayHFLimit);
+        EXTEfx.alAuxiliaryEffectSloti(this.slot, 1, this.id);
+        EXTEfx.alAuxiliaryEffectSlotf(this.slot, 2, 1.0F);
     }
 }
