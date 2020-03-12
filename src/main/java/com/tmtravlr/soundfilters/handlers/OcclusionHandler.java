@@ -91,7 +91,7 @@ public class OcclusionHandler {
      * Gets the occluded percent for the sound and player scaled to the config value
      */
     private static double getOccludedPercent(World world, ISound sound, Entity player) {
-        return getBaseOccludedPercent(world, new Vec3d(sound.getX(), sound.getY(), sound.getZ()), new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ));
+        return getBaseOccludedPercent(world, new Vec3d(sound.getX(), sound.getY(), sound.getZ()), MC.player.getPositionVec().add(0, player.getEyeHeight(),0));
     }
 
     /**

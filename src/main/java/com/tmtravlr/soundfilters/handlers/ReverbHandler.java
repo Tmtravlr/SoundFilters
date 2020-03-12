@@ -66,7 +66,7 @@ public class ReverbHandler {
                 ArrayList<CachedBlockInfo> blocksFound = new ArrayList<>();
 
                 LinkedList<ComparablePosition> toVisit = new LinkedList<>();
-                toVisit.add(new ComparablePosition(MathHelper.floor(MC.player.posX), MathHelper.floor(MC.player.posY + MC.player.getEyeHeight()), MathHelper.floor(MC.player.posZ)));
+                toVisit.add(new ComparablePosition(MathHelper.floor(MC.player.getPositionVec().getX()), MathHelper.floor(MC.player.getPositionVec().getY() + MC.player.getEyeHeight()), MathHelper.floor(MC.player.getPositionVec().getZ())));
 
                 // Flood fill through the area the player is in, with maximum size
                 // of maxBlocks (the size in the config file)
@@ -153,9 +153,9 @@ public class ReverbHandler {
                      * 5 for the B's
                      */
 
-                    int x = MathHelper.floor(MC.player.posX);
-                    int y = MathHelper.floor(MC.player.posY + MC.player.getEyeHeight());
-                    int z = MathHelper.floor(MC.player.posZ);
+                    int x = MathHelper.floor(MC.player.getPositionVec().getX());
+                    int y = MathHelper.floor(MC.player.getPositionVec().getY() + MC.player.getEyeHeight());
+                    int z = MathHelper.floor(MC.player.getPositionVec().getZ());
 
                     if (onlySkyAboveBlock(MC.world, x, y, z))
                         skyFactor++;
