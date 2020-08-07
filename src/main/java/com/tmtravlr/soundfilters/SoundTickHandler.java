@@ -495,7 +495,7 @@ public class SoundTickHandler {
 							skyFactor++;
 					}
 
-					skyFactor = 1.0F - skyFactor / 10.0F;
+					skyFactor = 1.0F - Math.min(skyFactor, 12F) / 12F;
 
 					float decayFactor = 0.0F;
 					float roomFactor = (float) roomSize / (float) SoundFiltersMod.profileSize;
