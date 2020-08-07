@@ -463,39 +463,39 @@ public class SoundTickHandler {
 							skyFactor++;
 						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y, z))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) + 5, y, z))
+						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) - 5, y, z))
 							skyFactor++;
 						if (onlySkyAboveBlock(mc.world, x, y, z + rand.nextInt(5) + 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x, y, z - rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x, y, z - rand.nextInt(5) - 5))
 							skyFactor++;
 						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y, z + rand.nextInt(5) + 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) + 5, y, z + rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) - 5, y, z + rand.nextInt(5) + 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y, z - rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y, z - rand.nextInt(5) - 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) + 5, y, z - rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) - 5, y, z - rand.nextInt(5) - 5))
 							skyFactor++;
 						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y + 5, z))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) + 5, y + 5, z))
+						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) - 5, y + 5, z))
 							skyFactor++;
 						if (onlySkyAboveBlock(mc.world, x, y + 5, z + rand.nextInt(5) + 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x, y + 5, z - rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x, y + 5, z - rand.nextInt(5) - 5))
 							skyFactor++;
 						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y + 5, z + rand.nextInt(5) + 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) + 5, y + 5, z + rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) - 5, y + 5, z + rand.nextInt(5) + 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y + 5, z - rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x + rand.nextInt(5) + 5, y + 5, z - rand.nextInt(5) - 5))
 							skyFactor++;
-						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) + 5, y + 5, z - rand.nextInt(5) + 5))
+						if (onlySkyAboveBlock(mc.world, x - rand.nextInt(5) - 5, y + 5, z - rand.nextInt(5) - 5))
 							skyFactor++;
 					}
 
-					skyFactor = 1.0F - skyFactor / 17.0F;
+					skyFactor = 1.0F - skyFactor / 10.0F;
 
 					float decayFactor = 0.0F;
 					float roomFactor = (float) roomSize / (float) SoundFiltersMod.profileSize;
