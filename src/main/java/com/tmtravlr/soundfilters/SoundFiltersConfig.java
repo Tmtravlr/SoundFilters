@@ -4,7 +4,7 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.tmtravlr.soundfilters.handlers.FilterHandler;
+import com.tmtravlr.soundfilters.handlers.ReverbHandler;
 import net.minecraft.command.arguments.BlockPredicateArgument;
 import net.minecraft.util.CachedBlockInfo;
 import net.minecraft.util.ResourceLocation;
@@ -173,7 +173,7 @@ public class SoundFiltersConfig {
         });
 
         //Re-initialize reverb filter
-        FilterHandler.initializeReverbFilter();
+        ReverbHandler.initializeReverb();
     }
 
     private static void initConfig() {
