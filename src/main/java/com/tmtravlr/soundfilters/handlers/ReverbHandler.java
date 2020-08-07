@@ -193,7 +193,7 @@ public class ReverbHandler {
                         skyFactor++;
                 }
 
-                skyFactor = 1.0F - skyFactor / 17.0F;
+                skyFactor = 1.0F - Math.min(skyFactor, 12F) / 12F;
                 skyFactor *= skyFactor;
 
                 float decayFactor = baseReverb;
