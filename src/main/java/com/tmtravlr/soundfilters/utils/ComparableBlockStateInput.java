@@ -1,7 +1,7 @@
 package com.tmtravlr.soundfilters.utils;
 
 import net.minecraft.command.arguments.BlockStateInput;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,8 +29,8 @@ public class ComparableBlockStateInput implements Comparable<ComparableBlockStat
         } else if (this.input.getState().getBlock().getRegistryName() != null && !this.input.getState().getBlock().getRegistryName().equals(other.input.getState().getBlock().getRegistryName())) {
             return this.input.getState().getBlock().getRegistryName().compareTo(other.input.getState().getBlock().getRegistryName());
         } else if (!(this.input.getState().getValues().isEmpty() && other.input.getState().getValues().isEmpty())) {
-            Set<IProperty> otherProperties = new HashSet<>(other.input.getState().getValues().keySet());
-            for (IProperty property : this.input.getState().getValues().keySet()) {
+            Set<Property> otherProperties = new HashSet<>(other.input.getState().getValues().keySet());
+            for (Property property : this.input.getState().getValues().keySet()) {
                 if (!otherProperties.contains(property)) {
                     return 1;
                 } else {

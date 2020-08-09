@@ -56,7 +56,7 @@ public class ReverbHandler {
                 Random rand = new Random();
                 int maxBlocks = Optional.ofNullable(SoundFiltersConfig.REVERB_MAX_BLOCKS.get()).orElse(1024);
                 float baseReverb = 0;
-                Double customDimensionReverb = SoundFiltersConfig.getCustomDimensionReverb(MC.world.dimension.getType().getRegistryName());
+                Double customDimensionReverb = SoundFiltersConfig.getCustomDimensionReverb(MC.world.func_234923_W_().getRegistryName());
 
                 if (customDimensionReverb != null) {
                     baseReverb = customDimensionReverb.floatValue();
@@ -193,7 +193,7 @@ public class ReverbHandler {
                         skyFactor++;
                 }
 
-                skyFactor = 1.0F - skyFactor / 17.0F;
+                skyFactor = 1.0F - Math.min(skyFactor, 12F) / 12F;
                 skyFactor *= skyFactor;
 
                 float decayFactor = baseReverb;

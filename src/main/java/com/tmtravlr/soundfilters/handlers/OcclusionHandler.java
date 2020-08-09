@@ -12,6 +12,7 @@ import net.minecraft.util.CachedBlockInfo;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.Map;
@@ -67,7 +68,7 @@ public class OcclusionHandler {
      * positions and removes any that are no longer playing.
      */
     public static void updateOcclusion() {
-        if (SoundFiltersConfig.OCCLUSION_ENABLED.get()) {
+        if (SoundFiltersConfig.OCCLUSION_ENABLED.get() && SoundEventHandler.playingSoundsChannel != null) {
             // Check for sounds that have stopped playing
             SOURCE_OCCLUSION_MAP.entrySet().removeIf((entry) -> !SoundEventHandler.playingSoundsChannel.containsKey(entry.getKey()));
 
@@ -91,7 +92,7 @@ public class OcclusionHandler {
      * Gets the occluded percent for the sound and player scaled to the config value
      */
     private static double getOccludedPercent(World world, ISound sound, Entity player) {
-        return getBaseOccludedPercent(world, new Vec3d(sound.getX(), sound.getY(), sound.getZ()), MC.player.getPositionVec().add(0, player.getEyeHeight(),0));
+        return getBaseOccludedPercent(world, new Vector3d(sound.getX(), sound.getY(), sound.getZ()), MC.player.getPositionVec().add(0, player.getEyeHeight(),0));
     }
 
     /**
@@ -103,7 +104,7 @@ public class OcclusionHandler {
      * @return A double representing the amount of occlusion to apply to the
      *         sound
      */
-    private static double getBaseOccludedPercent(World world, Vec3d sound, Vec3d listener) {
+    private static double getBaseOccludedPercent(World world, Vector3d sound, Vector3d listener) {
         double occludedPercent = 0.0D;
 
         // Fixes some funky things
@@ -113,7 +114,7 @@ public class OcclusionHandler {
             if (!Double.isNaN(listener.x) && !Double.isNaN(listener.y) && !Double.isNaN(listener.z)) {
                 BlockPos listenerPos = new BlockPos(listener);
                 BlockPos soundPos = new BlockPos(sound);
-                Vec3d prevSound;
+                Vector3d prevSound;
                 BlockPos prevSoundPos;
                 int i = 0;
 
@@ -145,19 +146,19 @@ public class OcclusionHandler {
                     BlockPos soundPosOffset = null;
 
                     if (xPercentChange < yPercentChange && xPercentChange < zPercentChange) {
-                        sound = new Vec3d(nextX, sound.y + yDifference * xPercentChange, sound.z + zDifference * xPercentChange);
+                        sound = new Vector3d(nextX, sound.y + yDifference * xPercentChange, sound.z + zDifference * xPercentChange);
 
                         if (listenerPos.getX() < soundPos.getX()) {
                             soundPosOffset = new BlockPos(-1, 0, 0);
                         }
                     } else if (yPercentChange < zPercentChange) {
-                        sound = new Vec3d(sound.x + xDifference * yPercentChange, nextY, sound.z + zDifference * yPercentChange);
+                        sound = new Vector3d(sound.x + xDifference * yPercentChange, nextY, sound.z + zDifference * yPercentChange);
 
                         if (listenerPos.getY() < soundPos.getY()) {
                             soundPosOffset = new BlockPos(0, -1, 0);
                         }
                     } else {
-                        sound = new Vec3d(sound.x + xDifference * zPercentChange, sound.y + yDifference * zPercentChange, nextZ);
+                        sound = new Vector3d(sound.x + xDifference * zPercentChange, sound.y + yDifference * zPercentChange, nextZ);
 
                         if (listenerPos.getZ() < soundPos.getZ()) {
                             soundPosOffset = new BlockPos(0, 0, -1);

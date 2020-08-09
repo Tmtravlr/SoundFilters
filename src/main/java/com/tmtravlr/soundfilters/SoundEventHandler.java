@@ -13,7 +13,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class SoundEventHandler {
 				OcclusionHandler.addOcclusionToMap(event.getSound());
 			}
 
-			if (!event.getSource().func_216435_g()) {
+			if (!event.getSource().isStopped()) {
 				FilterHandler.updateSourceFilters(event.getSound());
 			}
 		}
@@ -89,7 +88,7 @@ public class SoundEventHandler {
 	//Update filters for the sources currently playing, and remove sounds that are no longer playing
 	private static void updateFilters() {
 		playingSoundsChannel.forEach((sound, entry) -> entry.runOnSoundExecutor(source -> {
-			if (!source.func_216435_g()) {
+			if (!source.isStopped()) {
 				FilterHandler.updateSourceFilters(sound);
 			}
 		}));
